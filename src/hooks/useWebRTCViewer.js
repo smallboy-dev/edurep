@@ -12,16 +12,6 @@ const servers = {
   iceServers: [
     {
       urls: ['stun:stun1.l.google.com:19302', 'stun:stun2.l.google.com:19302'],
-    },
-    {
-      urls: 'turn:relay.metered.ca:80',
-      username: 'a6e3c0b0c1f9f1b4c3d4e5f6a7b8c9d0',
-      credential: '1a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p'
-    },
-    {
-      urls: 'turn:relay.metered.ca:443',
-      username: 'a6e3c0b0c1f9f1b4c3d4e5f6a7b8c9d0',
-      credential: '1a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p'
     }
   ],
   iceCandidatePoolSize: 10,
@@ -44,11 +34,7 @@ export function useWebRTCViewer(sessionId) {
       const viewerId = viewerIdRef.current;
 
       console.log(`Viewer ID: ${viewerId}`);
-
-      const viewerDocRef = doc(db, 'sessions', sessionId, 'viewers', viewerId);
-      const viewerCandidatesCol = collection(viewerDocRef, 'viewerCandidates');
-      const hostCandidatesCol = collection(viewerDocRef, 'hostCandidates');
-
+      
       // Connection state monitoring
       pc.onconnectionstatechange = () => {
         setConnectionState(pc.connectionState);
@@ -61,6 +47,7 @@ export function useWebRTCViewer(sessionId) {
       };
 
       // Initialize the viewer document to signal the host
+      const viewerDocRef = doc(db, 'sessions', sessionId, 'viewers', viewerId);
       try {
         await setDoc(viewerDocRef, {
           joinedAt: serverTimestamp(),
@@ -98,6 +85,7 @@ export function useWebRTCViewer(sessionId) {
       pc.onicecandidate = async (event) => {
         if (event.candidate) {
           console.log(`Sending ICE candidate:`, event.candidate);
+          const viewerCandidatesCol = collection(db, 'sessions', sessionId, 'viewers', viewerId, 'candidates');
           await setDoc(doc(viewerCandidatesCol), event.candidate.toJSON());
         } else {
           console.log('ICE gathering complete');
@@ -143,6 +131,7 @@ export function useWebRTCViewer(sessionId) {
       unsubRefs.current['doc'] = unsubDoc;
 
       // Listen for Host ICE Candidates
+      const hostCandidatesCol = collection(db, 'sessions', sessionId, 'viewers', viewerId, 'hostCandidates');
       const unsubCandidates = onSnapshot(hostCandidatesCol, (snapshot) => {
         snapshot.docChanges().forEach((change) => {
           if (change.type === 'added') {

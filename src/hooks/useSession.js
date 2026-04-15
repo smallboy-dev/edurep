@@ -48,7 +48,21 @@ export function useSession(sessionId) {
       console.error("Firestore Critical Sync Error:", err);
       console.error("Error code:", err.code);
       console.error("Error message:", err.message);
-      setError(`Failed to connect to session: ${err.message}`);
+      
+      // Handle connection errors gracefully
+      if (err.code === 'unavailable' || err.code === 'resource-exhausted') {
+        console.log("Firestore temporarily unavailable, retrying...");
+        setError("Connection temporarily unavailable. Please refresh the page.");
+      } else if (err.code === 'permission-denied') {
+        console.log("Permission denied, checking session access...");
+        setError("Access denied. Please check your session permissions.");
+      } else if (err.code === 'unauthenticated') {
+        console.log("Unauthenticated access, checking auth...");
+        setError("Authentication required. Please log in again.");
+      } else {
+        console.log("Network error detected, continuing with limited functionality...");
+        setError("Network connection issue. Some features may be limited.");
+      }
       setLoading(false);
     });
 

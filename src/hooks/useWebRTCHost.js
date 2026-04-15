@@ -12,16 +12,6 @@ const servers = {
   iceServers: [
     {
       urls: ['stun:stun1.l.google.com:19302', 'stun:stun2.l.google.com:19302'],
-    },
-    {
-      urls: 'turn:relay.metered.ca:80',
-      username: 'a6e3c0b0c1f9f1b4c3d4e5f6a7b8c9d0',
-      credential: '1a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p'
-    },
-    {
-      urls: 'turn:relay.metered.ca:443',
-      username: 'a6e3c0b0c1f9f1b4c3d4e5f6a7b8c9d0',
-      credential: '1a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p'
     }
   ],
   iceCandidatePoolSize: 10,
@@ -212,6 +202,26 @@ export function useWebRTCHost(sessionId) {
           }
         });
       });
+
+      // Add connection retry mechanism
+      const retryConnection = async (viewerId, stream, maxRetries = 3) => {
+        for (let attempt = 1; attempt <= maxRetries; attempt++) {
+          try {
+            await createPeerConnection(viewerId, stream);
+            console.log(`Connection attempt ${attempt} successful for viewer ${viewerId}`);
+            return true;
+          } catch (error) {
+            console.error(`Connection attempt ${attempt} failed for viewer ${viewerId}:`, error);
+            if (attempt < maxRetries) {
+              console.log(`Retrying connection to viewer ${viewerId} in 2 seconds...`);
+              await new Promise(resolve => setTimeout(resolve, 2000));
+            } else {
+              console.error(`Max retries reached for viewer ${viewerId}`);
+              return false;
+            }
+          }
+        }
+      };
 
       // Extra cleanup added to global
       viewerUnsubs.current['main_viewers_listener'] = unsubViewers;
