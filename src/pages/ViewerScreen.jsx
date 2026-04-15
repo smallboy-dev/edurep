@@ -19,8 +19,25 @@ export default function ViewerScreen() {
   // Connect remote stream to video element
   useEffect(() => {
     if (videoRef.current && remoteStream) {
+      console.log('=== CONNECTING STREAM TO VIDEO ===');
+      console.log('Remote stream:', remoteStream);
+      console.log('Stream tracks:', remoteStream.getTracks().length);
+      console.log('Video element:', videoRef.current);
+      
       videoRef.current.srcObject = remoteStream;
       console.log('Connected remote stream to video element');
+      
+      // Add event listeners to video element
+      videoRef.current.onloadedmetadata = () => {
+        console.log('Video metadata loaded');
+        videoRef.current.play().catch(err => {
+          console.error('Video play error:', err);
+        });
+      };
+      
+      videoRef.current.onerror = (err) => {
+        console.error('Video error:', err);
+      };
     }
   }, [remoteStream]);
 

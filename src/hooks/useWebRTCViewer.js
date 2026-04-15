@@ -73,7 +73,10 @@ export function useWebRTCViewer(sessionId) {
 
       // Stream handling
       pc.ontrack = (event) => {
+        console.log('=== ONTRACK EVENT ===');
         console.log(`Received remote track:`, event.track.kind);
+        console.log(`Track enabled:`, event.track.enabled);
+        console.log(`Track state:`, event.track.readyState);
         console.log(`Received stream:`, event.streams[0]);
         console.log(`Stream tracks:`, event.streams[0].getTracks().length);
         
@@ -83,8 +86,12 @@ export function useWebRTCViewer(sessionId) {
         
         // Log track information
         receivedStream.getTracks().forEach((track) => {
-          console.log(`Track added: ${track.kind}`, track.readyState);
+          console.log(`Track added: ${track.kind}`, track.readyState, track.enabled);
         });
+        
+        // Log connection state
+        console.log(`Connection state:`, pc.connectionState);
+        console.log(`ICE connection state:`, pc.iceConnectionState);
       };
 
       // Collect ICE candidates

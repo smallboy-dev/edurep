@@ -62,9 +62,15 @@ export function useWebRTCHost(sessionId, onBroadcastModeChange) {
     peerConnections.current[viewerId] = pc;
 
     // Push local tracks to connection
+    console.log(`Local stream tracks: ${stream.getTracks().length}`);
     stream.getTracks().forEach((track) => {
-      console.log(`Adding track to peer connection: ${track.kind}`, track);
+      console.log(`Adding track to peer connection: ${track.kind}`, track.readyState);
       pc.addTrack(track, stream);
+    });
+    
+    // Log when tracks are added to the connection
+    pc.getSenders().forEach((sender) => {
+      console.log(`Track sender:`, sender.track?.kind, sender.track?.readyState);
     });
 
     const viewerDocRef = doc(db, 'sessions', sessionId, 'viewers', viewerId);
@@ -172,15 +178,25 @@ export function useWebRTCHost(sessionId, onBroadcastModeChange) {
 
   const startShare = async () => {
     try {
+      console.log('=== STARTING SCREEN SHARE ===');
+      
       // Notify parent component of broadcast mode change
       if (onBroadcastModeChange) {
         onBroadcastModeChange('screen');
       }
 
+      console.log('Requesting display media...');
       const stream = await navigator.mediaDevices.getDisplayMedia({
         video: true,
         audio: true
       });
+      
+      console.log('Stream created successfully');
+      console.log('Stream tracks:', stream.getTracks().length);
+      stream.getTracks().forEach((track) => {
+        console.log(`Track: ${track.kind}`, track.readyState, track.enabled);
+      });
+      
       setLocalStream(stream);
       setIsSharing(true);
 
