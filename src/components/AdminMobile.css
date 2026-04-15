@@ -1,0 +1,131 @@
+/* Mobile Responsive Styles for Admin Dashboard */
+
+/* Dashboard Grid Responsiveness */
+@media (max-width: 1024px) {
+  .admin-dashboard .stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-dashboard {
+    flex-direction: column !important;
+  }
+  
+  .admin-sidebar {
+    width: 100% !important;
+    height: auto !important;
+    order: 2;
+  }
+  
+  .admin-main {
+    order: 1;
+  }
+  
+  .admin-dashboard .stats-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+  }
+  
+  .admin-dashboard .content-grid {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .admin-dashboard .control-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  
+  .admin-dashboard .broadcast-controls {
+    flex-direction: column !important;
+    gap: 1rem !important;
+  }
+  
+  .admin-dashboard .navigation-controls {
+    flex-direction: column !important;
+    gap: 0.5rem !important;
+  }
+  
+  .admin-dashboard .navigation-controls button {
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-dashboard .control-grid {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .admin-dashboard .card {
+    padding: 1rem !important;
+  }
+  
+  .admin-dashboard .form-inline {
+    flex-direction: column !important;
+  }
+  
+  .admin-dashboard .form-inline input {
+    margin-bottom: 0.5rem;
+  }
+  
+  .admin-dashboard .form-inline button {
+    width: 100% !important;
+  }
+}
+
+/* Floating Controls Mobile */
+@media (max-width: 768px) {
+  .floating-controls {
+    bottom: 1rem !important;
+    right: 1rem !important;
+    left: 1rem !important;
+    transform: none !important;
+  }
+  
+  .floating-controls .control-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 0.5rem !important;
+  }
+  
+  .floating-controls button {
+    padding: 0.75rem 0.5rem !important;
+    font-size: 0.75rem !important;
+  }
+  
+  .floating-controls button span {
+    display: none !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .floating-controls .control-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+/* Screen Share Mobile */
+@media (max-width: 768px) {
+  .screen-share-container {
+    height: 180px !important;
+  }
+  
+  .screen-share-controls {
+    flex-direction: column !important;
+    gap: 0.5rem !important;
+  }
+}
+
+/* Activity Log Mobile */
+@media (max-width: 768px) {
+  .activity-item {
+    padding: 0.5rem !important;
+  }
+  
+  .activity-item .icon-box {
+    width: 32px !important;
+    height: 32px !important;
+  }
+  
+  .activity-item .activity-details {
+    font-size: 0.8rem !important;
+  }
+}
