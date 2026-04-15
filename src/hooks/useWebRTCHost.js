@@ -27,7 +27,7 @@ const servers = {
   iceCandidatePoolSize: 10,
 };
 
-export function useWebRTCHost(sessionId, onBroadcastModeChange) {
+export function useWebRTCHost(sessionId) {
   const [localStream, setLocalStream] = useState(null);
   const [isSharing, setIsSharing] = useState(false);
   const [error, setError] = useState(null);
@@ -179,12 +179,6 @@ export function useWebRTCHost(sessionId, onBroadcastModeChange) {
   const startShare = async () => {
     try {
       console.log('=== STARTING SCREEN SHARE ===');
-      
-      // Notify parent component of broadcast mode change
-      if (onBroadcastModeChange) {
-        onBroadcastModeChange('screen');
-      }
-
       console.log('Requesting display media...');
       const stream = await navigator.mediaDevices.getDisplayMedia({
         video: true,
